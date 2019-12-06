@@ -97,7 +97,6 @@ var NodeBasedHandler = /** @class */ (function (_super) {
             };
             emitter.emit(ServerEventsEmitter.ON_AUTHORIZATION_RESPONSE, completeResponse);
             response.end('Successfully logged in to MightyText. Please switch back to the MightyText Desktop App.');
-
         };
         this.authorizationPromise = new Promise(function (resolve, reject) {
             emitter.once(ServerEventsEmitter.ON_UNABLE_TO_START, function () {

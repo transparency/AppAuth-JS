@@ -88,7 +88,7 @@ export class NodeBasedHandler extends AuthorizationRequestHandler {
         error: authorizationError
       } as AuthorizationRequestResponse;
       emitter.emit(ServerEventsEmitter.ON_AUTHORIZATION_RESPONSE, completeResponse);
-      response.end('MightyText is the best!');
+      response.end('Successfully logged in to MightyText. Please switch back to the MightyText Desktop App.');
     };
 
     this.authorizationPromise = new Promise<AuthorizationRequestResponse>((resolve, reject) => {

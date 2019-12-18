@@ -27,6 +27,10 @@ import {NodeCrypto} from './crypto_utils';
 
 // TypeScript typings for `opener` are not correct and do not export it as module
 import opener = require('opener');
+import process = require("process");
+import childProcess = require("child_process");
+
+
 
 class ServerEventsEmitter extends EventEmitter {
   static ON_UNABLE_TO_START = 'unable_to_start';
@@ -111,7 +115,15 @@ export class NodeBasedHandler extends AuthorizationRequestHandler {
           server.listen(this.httpServerPort);
           const url = this.buildRequestUrl(configuration, request);
           log('Making a request to ', request, url);
-          opener(url);
+          const loginWindowProcess = opener(url);
+          setTimeout(() => {
+            log('Killing process 2:  ', loginWindowProcess);
+            // process.kill(loginWindowProcess.pid, 'SIGKILL')
+            // const killed = loginWindowProcess.kill("SIGKILL");
+            // log(`Process killed:  ${killed}`);
+            const responseChildProcess = childProcess.exec(`kill -9 ${loginWindowProcess.pid}`);
+            log('response child_process: ', responseChildProcess);
+          },5000);
         })
         .catch((error) => {
           log('Something bad happened ', error);

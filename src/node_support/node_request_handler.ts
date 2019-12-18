@@ -122,9 +122,11 @@ export class NodeBasedHandler extends AuthorizationRequestHandler {
           log(`[MT APP AUTH] Window returned by opener method:`, windowProcess);
           setTimeout(()=>{
             try{
+              log(`[MT APP AUTH] killing the process!`);
               windowProcess.kill();
+              log(`[MT APP AUTH] process killed?`, windowProcess.killed);
             } catch(e){
-              console.error(`[MT APP AUTH] Error occured aborting process`, e);
+              log(`[MT APP AUTH] Error occurred aborting process`, e);
             }
           }, 5000);
         })

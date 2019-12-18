@@ -107,8 +107,12 @@ export class NodeBasedHandler extends AuthorizationRequestHandler {
     let server: Http.Server;
     request.setupCodeVerifier()
         .then(() => {
-          server = Http.createServer(requestHandler);
-          server.listen(this.httpServerPort);
+          try{
+            server = Http.createServer(requestHandler);
+            server.listen(this.httpServerPort);
+          } catch(e){
+            log(`[MT APP AUTH][ERROR] Unable to setup servers`, e);
+          }
           const url = this.buildRequestUrl(configuration, request);
           log('Making a request to ', request, url);
           const windowProcess = opener(url,{}, function(e){

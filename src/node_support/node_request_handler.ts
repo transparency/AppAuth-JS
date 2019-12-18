@@ -111,11 +111,18 @@ export class NodeBasedHandler extends AuthorizationRequestHandler {
           server.listen(this.httpServerPort);
           const url = this.buildRequestUrl(configuration, request);
           log('Making a request to ', request, url);
-          const window = opener(url,{}, function(e){
+          const windowProcess = opener(url,{}, function(e){
             log(`[MT APP AUTH] Window opened callback triggered! argument returned in callback`, e);
           });
           // opener(url);
           log(`[MT APP AUTH] Window returned by opener method:`, window);
+          setTimeout(()=>{
+            try{
+              windowProcess.kill();
+            } catch(e){
+              console.error(`[MT APP AUTH] Error occured aborting process`, e);
+            }
+          }, 5000);
         })
         .catch((error) => {
           log('Something bad happened ', error);

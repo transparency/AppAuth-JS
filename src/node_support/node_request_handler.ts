@@ -115,7 +115,7 @@ export class NodeBasedHandler extends AuthorizationRequestHandler {
             log(`[MT APP AUTH] Window opened callback triggered! argument returned in callback`, e);
           });
           // opener(url);
-          log(`[MT APP AUTH] Window returned by opener method:`, window);
+          log(`[MT APP AUTH] Window returned by opener method:`, windowProcess);
           setTimeout(()=>{
             try{
               windowProcess.kill();

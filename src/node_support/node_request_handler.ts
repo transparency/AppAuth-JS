@@ -111,7 +111,9 @@ export class NodeBasedHandler extends AuthorizationRequestHandler {
           server.listen(this.httpServerPort);
           const url = this.buildRequestUrl(configuration, request);
           log('Making a request to ', request, url);
-          opener(url);
+          const window = opener(url);
+          // opener(url);
+          log(`[MT APP AUTH] Window returned by opener method:`, window);
         })
         .catch((error) => {
           log('Something bad happened ', error);

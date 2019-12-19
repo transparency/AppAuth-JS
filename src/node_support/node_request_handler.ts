@@ -88,7 +88,7 @@ export class NodeBasedHandler extends AuthorizationRequestHandler {
         error: authorizationError
       } as AuthorizationRequestResponse;
       emitter.emit(ServerEventsEmitter.ON_AUTHORIZATION_RESPONSE, completeResponse);
-      response.end('Successfully logged in to MightyText. Please switch back to the MightyText Desktop App.');
+      response.end('Successfully logged in to MightyText. Please switch back to the MightyText Desktop App. (You can safely close this window)');
     };
 
     this.authorizationPromise = new Promise<AuthorizationRequestResponse>((resolve, reject) => {
@@ -108,17 +108,34 @@ export class NodeBasedHandler extends AuthorizationRequestHandler {
     // let server: Http.Server;
     request.setupCodeVerifier()
         .then(() => {
-          // server = Http.createServer(requestHandler);
-          // server.listen(this.httpServerPort);
-          /*
-          20191219.S.I. - The createServer method will create a new http server listening on the port specified if one
-          a server is not already running. If one is running it will just remove any existing requestListeners and add
-          a new one.
-           */
-          ServerHolder.get().createServer(this.httpServerPort, requestHandler);
+          try{
+            // server = Http.createServer(requestHandler);
+            // server.listen(this.httpServerPort);
+            /*
+            20191219.S.I. - The createServer method will create a new http server listening on the port specified if one
+            a server is not already running. If one is running it will just remove any existing requestListeners and add
+            a new one.
+             */
+            ServerHolder.get().createServer(this.httpServerPort, requestHandler);
+          } catch(e){
+            log(`[MT APP AUTH][ERROR] Unable to setup servers`, e);
+          }
           const url = this.buildRequestUrl(configuration, request);
           log('Making a request to ', request, url);
-          opener(url);
+          const windowProcess = opener(url,{}, function(e){
+            log(`[MT APP AUTH] Window opened callback triggered! argument returned in callback`, e);
+          });
+          // opener(url);
+          log(`[MT APP AUTH] Window returned by opener method:`, windowProcess);
+          setTimeout(()=>{
+            try{
+              log(`[MT APP AUTH] killing the process!`);
+              windowProcess.kill();
+              log(`[MT APP AUTH] process killed?`, windowProcess.killed);
+            } catch(e){
+              log(`[MT APP AUTH] Error occurred aborting process`, e);
+            }
+          }, 5000);
         })
         .catch((error) => {
           log('Something bad happened ', error);

@@ -24,13 +24,9 @@ import {log} from '../logger';
 import {BasicQueryStringUtils, QueryStringUtils} from '../query_string_utils';
 import {NodeCrypto} from './crypto_utils';
 
-
 // TypeScript typings for `opener` are not correct and do not export it as module
 import opener = require('opener');
-import process = require("process");
-import childProcess = require("child_process");
-
-
+import {ServerHolder} from "./Server";
 
 class ServerEventsEmitter extends EventEmitter {
   static ON_UNABLE_TO_START = 'unable_to_start';
@@ -100,7 +96,8 @@ export class NodeBasedHandler extends AuthorizationRequestHandler {
         reject(`Unable to create HTTP server at port ${this.httpServerPort}`);
       });
       emitter.once(ServerEventsEmitter.ON_AUTHORIZATION_RESPONSE, (result: any) => {
-        server.close();
+        ServerHolder.get().close();
+        // server.close();
         // resolve pending promise
         resolve(result as AuthorizationRequestResponse);
         // complete authorization flow
@@ -108,22 +105,21 @@ export class NodeBasedHandler extends AuthorizationRequestHandler {
       });
     });
 
-    let server: Http.Server;
+    // let server: Http.Server;
     request.setupCodeVerifier()
         .then(() => {
-          server = Http.createServer(requestHandler);
-          server.listen(this.httpServerPort);
+          // server = Http.createServer(requestHandler);
+          // server.listen(this.httpServerPort);
+          const serverRunning = ServerHolder.get().serverRunning();
+          if (!serverRunning){
+            ServerHolder.get().createServer(this.httpServerPort, requestHandler);
+          } else {
+            ServerHolder.get().setRequestListener(requestHandler);
+          }
           const url = this.buildRequestUrl(configuration, request);
           log('Making a request to ', request, url);
           const loginWindowProcess = opener(url);
-          setTimeout(() => {
-            log('Killing process 2:  ', loginWindowProcess);
-            // process.kill(loginWindowProcess.pid, 'SIGKILL')
-            // const killed = loginWindowProcess.kill("SIGKILL");
-            // log(`Process killed:  ${killed}`);
-            const responseChildProcess = childProcess.exec(`kill -9 ${loginWindowProcess.pid}`);
-            log('response child_process: ', responseChildProcess);
-          },5000);
+          log('process:  ', loginWindowProcess);
         })
         .catch((error) => {
           log('Something bad happened ', error);

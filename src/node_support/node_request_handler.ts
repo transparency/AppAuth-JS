@@ -24,9 +24,9 @@ import {log} from '../logger';
 import {BasicQueryStringUtils, QueryStringUtils} from '../query_string_utils';
 import {NodeCrypto} from './crypto_utils';
 
-
 // TypeScript typings for `opener` are not correct and do not export it as module
 import opener = require('opener');
+import {ServerHolder} from "./Server";
 
 class ServerEventsEmitter extends EventEmitter {
   static ON_UNABLE_TO_START = 'unable_to_start';
@@ -96,7 +96,8 @@ export class NodeBasedHandler extends AuthorizationRequestHandler {
         reject(`Unable to create HTTP server at port ${this.httpServerPort}`);
       });
       emitter.once(ServerEventsEmitter.ON_AUTHORIZATION_RESPONSE, (result: any) => {
-        server.close();
+        ServerHolder.get().close();
+        // server.close();
         // resolve pending promise
         resolve(result as AuthorizationRequestResponse);
         // complete authorization flow
@@ -104,11 +105,17 @@ export class NodeBasedHandler extends AuthorizationRequestHandler {
       });
     });
 
-    let server: Http.Server;
+    // let server: Http.Server;
     request.setupCodeVerifier()
         .then(() => {
-          server = Http.createServer(requestHandler);
-          server.listen(this.httpServerPort);
+          // server = Http.createServer(requestHandler);
+          // server.listen(this.httpServerPort);
+          /*
+          20191219.S.I. - The createServer method will create a new http server listening on the port specified if one
+          a server is not already running. If one is running it will just remove any existing requestListeners and add
+          a new one.
+           */
+          ServerHolder.get().createServer(this.httpServerPort, requestHandler);
           const url = this.buildRequestUrl(configuration, request);
           log('Making a request to ', request, url);
           opener(url);

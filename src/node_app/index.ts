@@ -37,6 +37,9 @@ const openIdConnectUrl = 'https://accounts.google.com';
 
 /* example client configuration */
 const clientId = '511828570984-7nmej36h9j2tebiqmpqh835naet4vci4.apps.googleusercontent.com';
+//added by KL on 9.27.22 because this is a dummy value for this test app.  had to do this because of the compilation error.
+const clientSecret = '';
+
 const redirectUri = `http://127.0.0.1:${PORT}`;
 const scope = 'openid';
 
@@ -93,7 +96,7 @@ export class App {
       configuration: AuthorizationServiceConfiguration,
       request: AuthorizationRequest,
       response: AuthorizationResponse) {
-    
+
     let extras: StringMap|undefined = undefined;
     if (request && request.internal) {
       extras = {};
@@ -102,6 +105,7 @@ export class App {
 
     let tokenRequest = new TokenRequest({
       client_id: clientId,
+      client_secret: clientSecret,
       redirect_uri: redirectUri,
       grant_type: GRANT_TYPE_AUTHORIZATION_CODE,
       code: response.code,
@@ -118,6 +122,7 @@ export class App {
   makeAccessTokenRequest(configuration: AuthorizationServiceConfiguration, refreshToken: string) {
     let request = new TokenRequest({
       client_id: clientId,
+      client_secret: clientSecret,
       redirect_uri: redirectUri,
       grant_type: GRANT_TYPE_REFRESH_TOKEN,
       code: undefined,

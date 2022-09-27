@@ -17,11 +17,13 @@ import {StringMap} from './types';
 
 describe('Token Request tests', () => {
   const clientId = 'client_id';
+  const clientSecret = 'client_secret';
   const redirectUri = 'http://my/redirect_uri';
   const code = 'some_code';
   const extras: StringMap = {'key': 'value'};
 
   let request: TokenRequest = new TokenRequest({
+    client_secret: clientSecret,
     client_id: clientId,
     redirect_uri: redirectUri,
     grant_type: GRANT_TYPE_AUTHORIZATION_CODE,
@@ -33,6 +35,7 @@ describe('Token Request tests', () => {
   it('Basic Token Request Tests', () => {
     expect(request).not.toBeNull();
     expect(request.clientId).toBe(clientId);
+    expect(request.clientSecret).toBe(clientSecret);
     expect(request.redirectUri).toBe(redirectUri);
     expect(request.code).toBe(code);
     expect(request.grantType).toBe(GRANT_TYPE_AUTHORIZATION_CODE);
@@ -47,6 +50,7 @@ describe('Token Request tests', () => {
     let newRequest = new TokenRequest(json);
     expect(newRequest).not.toBeNull();
     expect(newRequest.clientId).toBe(clientId);
+    expect(newRequest.clientSecret).toBe(clientSecret);
     expect(newRequest.redirectUri).toBe(redirectUri);
     expect(newRequest.code).toBe(code);
     expect(newRequest.grantType).toBe(GRANT_TYPE_AUTHORIZATION_CODE);

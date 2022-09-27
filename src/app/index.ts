@@ -47,6 +47,9 @@ const openIdConnectUrl = 'https://accounts.google.com';
 
 /* example client configuration */
 const clientId = '511828570984-7nmej36h9j2tebiqmpqh835naet4vci4.apps.googleusercontent.com';
+//added by KL on 9.27.22 because this is a dummy value for this test app.  had to do this because of the compilation error.
+const clientSecret = '';
+
 const redirectUri = 'http://localhost:8000/app/redirect.html';
 const scope = 'openid';
 
@@ -136,6 +139,7 @@ export class App {
       // use the code to make the token request.
       request = new TokenRequest({
         client_id: clientId,
+        client_secret: clientSecret,
         redirect_uri: redirectUri,
         grant_type: GRANT_TYPE_AUTHORIZATION_CODE,
         code: this.code,
@@ -146,6 +150,7 @@ export class App {
       // use the token response to make a request for an access token
       request = new TokenRequest({
         client_id: clientId,
+        client_secret: clientSecret,
         redirect_uri: redirectUri,
         grant_type: GRANT_TYPE_REFRESH_TOKEN,
         code: undefined,

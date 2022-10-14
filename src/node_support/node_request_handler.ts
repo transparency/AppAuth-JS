@@ -106,7 +106,7 @@ export class NodeBasedHandler extends AuthorizationRequestHandler {
             this.completeAuthorizationRequestIfPossible();
           });
         } catch(e){
-          reject(`[MT APP AUTH] Unable to setup listeners on the emitter`, e);
+          reject(`[MT APP AUTH] Unable to setup listeners on the emitter`);
         }
       });
     } catch(e){

@@ -91,19 +91,27 @@ export class NodeBasedHandler extends AuthorizationRequestHandler {
       response.end('Successfully logged in to MightyText. Please switch back to the MightyText Desktop App. (You can safely close this window)');
     };
 
-    this.authorizationPromise = new Promise<AuthorizationRequestResponse>((resolve, reject) => {
-      emitter.once(ServerEventsEmitter.ON_UNABLE_TO_START, () => {
-        reject(`Unable to create HTTP server at port ${this.httpServerPort}`);
+    try{
+      this.authorizationPromise = new Promise<AuthorizationRequestResponse>((resolve, reject) => {
+        try{
+          emitter.once(ServerEventsEmitter.ON_UNABLE_TO_START, () => {
+            reject(`Unable to create HTTP server at port ${this.httpServerPort}`);
+          });
+          emitter.once(ServerEventsEmitter.ON_AUTHORIZATION_RESPONSE, (result: any) => {
+            ServerHolder.get().close();
+            // server.close();
+            // resolve pending promise
+            resolve(result as AuthorizationRequestResponse);
+            // complete authorization flow
+            this.completeAuthorizationRequestIfPossible();
+          });
+        } catch(e){
+          reject(`[MT APP AUTH] Unable to setup listeners on the emitter`, e);
+        }
       });
-      emitter.once(ServerEventsEmitter.ON_AUTHORIZATION_RESPONSE, (result: any) => {
-        ServerHolder.get().close();
-        // server.close();
-        // resolve pending promise
-        resolve(result as AuthorizationRequestResponse);
-        // complete authorization flow
-        this.completeAuthorizationRequestIfPossible();
-      });
-    });
+    } catch(e){
+      log(`[MT APP AUTH] Unable to initialize authorizationPromise!`, e);
+    }
 
     // let server: Http.Server;
     request.setupCodeVerifier()

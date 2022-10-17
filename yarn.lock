@@ -2123,10 +2123,10 @@
   dependencies:
     "wrappy" "1"
 
-"opener@^1.5.1":
-  "integrity" "sha512-goYSy5c2UXE4Ra1xixabeVh1guIX/ZV/YokJksb6q2lubWu6UbvPQ20p542/sFIll1nl8JnCyK9oBaOcCWXwvA=="
-  "resolved" "https://registry.npmjs.org/opener/-/opener-1.5.1.tgz"
-  "version" "1.5.1"
+"opener@^1.5.2":
+  "integrity" "sha512-ur5UIdyw5Y7yEj9wLzhqXiy6GZ3Mwx0yGI+5sMn2r0N0v3cKJvUmFH5yPP+WXh9e0xfyzyJX95D8l088DNFj7A=="
+  "resolved" "https://registry.npmjs.org/opener/-/opener-1.5.2.tgz"
+  "version" "1.5.2"
 
 "opener@~1.4.0":
   "integrity" "sha1-XG2ixdflgx6P+jlklQ+NZnSskLg="

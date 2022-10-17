@@ -25,7 +25,7 @@ import {BasicQueryStringUtils, QueryStringUtils} from '../query_string_utils';
 import {NodeCrypto} from './crypto_utils';
 
 // TypeScript typings for `opener` are not correct and do not export it as module
-import opener = require('opener');
+import open = require('open');
 import {ServerHolder} from "./Server";
 
 class ServerEventsEmitter extends EventEmitter {
@@ -48,7 +48,7 @@ export class NodeBasedHandler extends AuthorizationRequestHandler {
   performAuthorizationRequest(
       configuration: AuthorizationServiceConfiguration,
       request: AuthorizationRequest) {
-    // use opener to launch a web browser and start the authorization flow.
+    // use open to launch a web browser and start the authorization flow.
     // start a web server to handle the authorization response.
     const emitter = new ServerEventsEmitter();
 
@@ -115,7 +115,7 @@ export class NodeBasedHandler extends AuthorizationRequestHandler {
 
     // let server: Http.Server;
     request.setupCodeVerifier()
-        .then(() => {
+        .then(async () => {
           try{
             // server = Http.createServer(requestHandler);
             // server.listen(this.httpServerPort);
@@ -130,20 +130,19 @@ export class NodeBasedHandler extends AuthorizationRequestHandler {
           }
           const url = this.buildRequestUrl(configuration, request);
           log('Making a request to ', request, url);
-          const windowProcess = opener(url,{}, function(e){
-            log(`[MT APP AUTH] Window opened callback triggered! argument returned in callback`, e);
-          });
+          const windowProcess = await open(url,{});
           // opener(url);
           log(`[MT APP AUTH] Window returned by opener method:`, windowProcess);
-          setTimeout(()=>{
-            try{
-              log(`[MT APP AUTH] killing the process!`);
-              windowProcess.kill();
-              log(`[MT APP AUTH] process killed?`, windowProcess.killed);
-            } catch(e){
-              log(`[MT APP AUTH] Error occurred aborting process`, e);
-            }
-          }, 5000);
+          log(`[MT APP AUTH] window process killed?`);
+          // setTimeout(()=>{
+          //   try{
+          //     log(`[MT APP AUTH] killing the process!`);
+          //     windowProcess.kill();
+          //     log(`[MT APP AUTH] process killed?`, windowProcess.killed);
+          //   } catch(e){
+          //     log(`[MT APP AUTH] Error occurred aborting process`, e);
+          //   }
+          // }, 5000);
         })
         .catch((error) => {
           log('Something bad happened ', error);

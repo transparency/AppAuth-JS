@@ -129,8 +129,8 @@ export class NodeBasedHandler extends AuthorizationRequestHandler {
             log(`[MT APP AUTH][ERROR] Unable to setup servers`, e);
           }
           const url = this.buildRequestUrl(configuration, request);
-          log('Making a request to ', request, url);
-          const windowProcess = await open(url,{});
+          log(`[MT APP AUTH] Making a request to: "${url}"`);
+          const windowProcess = await open(url);
           // opener(url);
           log(`[MT APP AUTH] Window returned by opener method:`, windowProcess);
           log(`[MT APP AUTH] window process killed?`);

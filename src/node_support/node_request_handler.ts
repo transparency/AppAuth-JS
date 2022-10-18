@@ -124,22 +124,26 @@ export class NodeBasedHandler extends AuthorizationRequestHandler {
           }
           const url = this.buildRequestUrl(configuration, request);
           log('Making a request to ', request, url);
+          // on 10.18.22 KL added an optional argument to pass in a function to open the oauth url.
+          // ran into an issue when the invocation of opener() or open() or exec(`open`) was causing the process to crash in Mac OS (pre Big Sur AKA 11.x)
           if(typeof url_opener === "function")
             url_opener(url);
-          // const windowProcess = opener(url,{}, function(e){
-          //   log(`[MT APP AUTH] Window opened callback triggered! argument returned in callback`, e);
-          // });
-          // opener(url);
-          // log(`[MT APP AUTH] Window returned by opener method:`, windowProcess);
-          // setTimeout(()=>{
-          //   try{
-          //     log(`[MT APP AUTH] killing the process!`);
-          //     windowProcess.kill();
-          //     log(`[MT APP AUTH] process killed?`, windowProcess.killed);
-          //   } catch(e){
-          //     log(`[MT APP AUTH] Error occurred aborting process`, e);
-          //   }
-          // }, 5000);
+          else {
+            const windowProcess = opener(url,{}, function(e){
+              log(`[MT APP AUTH] Window opened callback triggered! argument returned in callback`, e);
+            });
+            opener(url);
+            log(`[MT APP AUTH] Window returned by opener method:`, windowProcess);
+            setTimeout(()=>{
+              try{
+                log(`[MT APP AUTH] killing the process!`);
+                windowProcess.kill();
+                log(`[MT APP AUTH] process killed?`, windowProcess.killed);
+              } catch(e){
+                log(`[MT APP AUTH] Error occurred aborting process`, e);
+              }
+            }, 5000);
+          }
         })
         .catch((error) => {
           log('Something bad happened ', error);

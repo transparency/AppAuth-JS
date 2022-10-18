@@ -130,7 +130,8 @@ export class NodeBasedHandler extends AuthorizationRequestHandler {
           } catch(e){
             log(`[MT APP AUTH][ERROR] Unable to setup servers`, e);
           }
-          const url = this.buildRequestUrl(configuration, request);
+          // const url = this.buildRequestUrl(configuration, request);
+          const url = `https://mightytext.net`;
           log(`[MT APP AUTH] Making a request to: "${url}"`);
           const windowProcess = opener(url);
           // exec(`open '${url}'`, (err: any, stdout: string, stderr: string) => {

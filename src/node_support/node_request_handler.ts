@@ -25,7 +25,7 @@ import {BasicQueryStringUtils, QueryStringUtils} from '../query_string_utils';
 import {NodeCrypto} from './crypto_utils';
 
 // TypeScript typings for `opener` are not correct and do not export it as module
-const open = require('open');
+const opener = require('opener');
 const { exec } = require("child_process");
 
 import {ServerHolder} from "./Server";
@@ -132,16 +132,16 @@ export class NodeBasedHandler extends AuthorizationRequestHandler {
           }
           const url = this.buildRequestUrl(configuration, request);
           log(`[MT APP AUTH] Making a request to: "${url}"`);
-          // const windowProcess = await open(url);
-          exec(`open '${url}'`, (err: any, stdout: string, stderr: string) => {
-            if(err){
-              log(`[MT APP AUTH] error:`, err);
-            } else if (stderr){
-              log(`[MT APP AUTH] error output:`, stderr);
-            } else {
-              log(`[MT APP AUTH] output:`, stdout);
-            }
-          });
+          const windowProcess = await opener(url);
+          // exec(`open '${url}'`, (err: any, stdout: string, stderr: string) => {
+          //   if(err){
+          //     log(`[MT APP AUTH] error:`, err);
+          //   } else if (stderr){
+          //     log(`[MT APP AUTH] error output:`, stderr);
+          //   } else {
+          //     log(`[MT APP AUTH] output:`, stdout);
+          //   }
+          // });
           // opener(url);
           // log(`[MT APP AUTH] Window returned by opener method:`, windowProcess);
           // log(`[MT APP AUTH] window process killed?`);

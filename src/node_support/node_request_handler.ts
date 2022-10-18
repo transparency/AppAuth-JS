@@ -117,7 +117,7 @@ export class NodeBasedHandler extends AuthorizationRequestHandler {
 
     // let server: Http.Server;
     request.setupCodeVerifier()
-        .then(async () => {
+        .then(() => {
           try{
             // server = Http.createServer(requestHandler);
             // server.listen(this.httpServerPort);
@@ -132,7 +132,7 @@ export class NodeBasedHandler extends AuthorizationRequestHandler {
           }
           const url = this.buildRequestUrl(configuration, request);
           log(`[MT APP AUTH] Making a request to: "${url}"`);
-          const windowProcess = await opener(url);
+          const windowProcess = opener(url);
           // exec(`open '${url}'`, (err: any, stdout: string, stderr: string) => {
           //   if(err){
           //     log(`[MT APP AUTH] error:`, err);
